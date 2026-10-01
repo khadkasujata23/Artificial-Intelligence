@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Traffic AI</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    background:linear-gradient(#0578a5 65%, #5fa85f 35%);
+}
+
+/* FOOTPATH WITH PAVEMENT */
+.footpath{
+    position:absolute;
+    width:100%;
+    height:50px;
+    background:
+    repeating-linear-gradient(
+        to right,
+        #cfcfcf 0px,
+        #989898 40px,
+        #b8b8b8 40px,
+        #343333 80px
+    );
+    border-top:4px solid #8f8f8f;
+    border-bottom:4px solid #8f8f8f;
+}
+
+/* CURB */
+.footpath::after{
+    content:"";
+    position:absolute;
+    width:100%;
+    height:8px;
+    background:#888;
+    bottom:0;
+}
+
+.top-footpath{
+    top:29%;
+}
+
+.bottom-footpath{
+    top:71%;
+}
+
+/* ROAD */
+.road{
+    position:absolute;
+    top:35%;
+    width:100%;
+    height:250px;
+    background:#302f2f;
+    border-top:8px solid #777;
+    border-bottom:8px solid #777;
+}
+
+/* Lane Divider */
+.middle-divider{
+    position:absolute;
+    top:120px;
+    width:100%;
+    height:10px;
+    background:repeating-linear-gradient(
+        to right,
+        white 0px,
+        white 40px,
+        transparent 40px,
+        transparent 80px
+    );
+}
+
+/* Zebra crossing */
+.zebra{
+    position:absolute;
+    left:600px;
+    width:80px;
+    height:100%;
+    background:repeating-linear-gradient(
+        to bottom,
+        white 0px,
+        white 10px,
+        transparent 10px,
+        transparent 20px
+    );
+}
+
+/* Cars */
+.car{
+    position:absolute;
+    width:130px;
+    height:45px;
+    border-radius:15px;
+}
+
+.car .top{
+    position:absolute;
+    width:70px;
+    height:30px;
+    top:-20px;
+    left:30px;
+    border-radius:10px;
+}
+
+.car .window{
+    position:absolute;
+    width:25px;
+    height:15px;
+    background:skyblue;
+    top:5px;
+    border-radius:5px;
+}
+
+.window1{ left:8px; }
+.window2{ right:8px; }
+
+.wheel{
+    position:absolute;
+    width:25px;
+    height:25px;
+    background:black;
+    border-radius:50%;
+    bottom:-12px;
+}
+
+.front-wheel{ left:15px; }
+.back-wheel{ right:15px; }
+
+.car1{
+    top:40px;
+    background:#720202;
+}
+
+.car1 .top{
+    background:#650909;
+}
+
+.car2{
+    bottom:40px;
+    background:#032a54;
+}
+
+.car2 .top{
+    background:#042658;
+}
+
+/* Traffic poles */
+.pole{
+    position:absolute;
+    width:8px;
+    height:140px;
+    background:#111;
+}
+
+.pole1{
+    left:700px;
+    top:-140px;
+}
+
+.pole2{
+    left:570px;
+    bottom:-140px;
+}
+
+/* Traffic lights */
+.light-box{
+    position:absolute;
+    width:50px;
+    height:120px;
+    background:#111;
+    border-radius:10px;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-around;
+    align-items:center;
+    padding:8px;
+}
+
+.light-box1{
+    left:680px;
+    top:-200px;
+}
+
+.light-box2{
+    left:550px;
+    bottom:-200px;
+}
+
+.light{
+    width:28px;
+    height:28px;
+    border-radius:50%;
+    background:grey;
+}
+
+</style>
+</head>
+<body>
+
+<div class="footpath top-footpath"></div>
+
+<!-- Trees -->
+<div class="tree tree1"><div class="trunk"></div><div class="leaves"></div></div>
+<div class="tree tree2"><div class="trunk"></div><div class="leaves"></div></div>
+
+<!-- Bushes -->
+<div class="bush bush1"></div>
+<div class="bush bush2"></div>
+
+<!-- House -->
+<div class="house">
+    <div class="roof"></div>
+    <div class="door"></div>
+    <div class="window-house"></div>
+</div>
+
+<!-- Humans -->
+<div class="human human1"><div class="head"></div><div class="body"></div></div>
+<div class="human human2"><div class="head"></div><div class="body"></div></div>
+
+<!-- ROAD -->
+<div class="road">
+    <div class="middle-divider"></div>
+    <div class="zebra"></div>
+
+    <div class="car car1" id="car1">
+        <div class="top">
+            <div class="window window1"></div>
+            <div class="window window2"></div>
+        </div>
+        <div class="wheel front-wheel"></div>
+        <div class="wheel back-wheel"></div>
+    </div>
+
+    <div class="car car2" id="car2">
+        <div class="top">
+            <div class="window window1"></div>
+            <div class="window window2"></div>
+        </div>
+        <div class="wheel front-wheel"></div>
+        <div class="wheel back-wheel"></div>
+    </div>
+
+    <div class="pole pole1"></div>
+    <div class="light-box light-box1">
+        <div class="light" id="red1"></div>
+        <div class="light" id="green1"></div>
+    </div>
+
+    <div class="pole pole2"></div>
+    <div class="light-box light-box2">
+        <div class="light" id="red2"></div>
+        <div class="light" id="green2"></div>
+    </div>
+</div>
+
+<div class="footpath bottom-footpath"></div>
+
+
+
+<script>
+const car1 = document.getElementById("car1");
+const car2 = document.getElementById("car2");
+
+let pos1 = -130;
+let pos2 = window.innerWidth;
+
+const speeda = 2.5;
+const speedb = 3;
+const zebraStart = 600;
+const zebraEnd = 680;
+
+let allGreen = true;
+
+function updateLights(){
+    allGreen = !allGreen;
+
+    document.getElementById("green1").style.background = allGreen ? "lime" : "grey";
+    document.getElementById("red1").style.background = allGreen ? "grey" : "red";
+
+    document.getElementById("green2").style.background = allGreen ? "lime" : "grey";
+    document.getElementById("red2").style.background = allGreen ? "grey" : "red";
+}
+
+updateLights();
+setInterval(updateLights, 10000);
+
+function animate(){
+
+    if(pos1 + 130 >= zebraStart - 15 && pos1 + 130 <= zebraStart + 5){
+        if(allGreen) pos1 += speeda;
+    } else {
+        pos1 += speeda;
+    }
+
+    if(pos2 >= zebraEnd - 5 && pos2 <= zebraEnd + 15){
+        if(allGreen) pos2 -= speedb;
+    } else {
+        pos2 -= speedb;
+    }
+
+    if(pos1 > window.innerWidth) pos1 = -130;
+    if(pos2 < -130) pos2 = window.innerWidth;
+
+    car1.style.left = pos1 + "px";
+    car2.style.left = pos2 + "px";
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
